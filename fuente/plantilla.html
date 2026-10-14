@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HELIO · Del núcleo a la Tierra</title>
+  <meta name="description" content="Un viaje en 3D por los procesos atómicos del Sol: la fusión en el núcleo, el largo camino de un fotón, la convección, la fotosfera, la corona, el viento solar y lo que llega a la Tierra.">
+  <meta name="color-scheme" content="dark light">
+  <meta name="author" content="José Luis Pizarro">
+  <!--ALTERNATES-->
+  <!--CSS-->
+</head>
+<body class="helio">
+  <a class="syx-skip-link" href="#nucleo">Saltar al relato</a>
+
+  <!-- El lienzo 3D vive detrás del relato; el texto nunca depende de él. -->
+  <canvas class="helio-lienzo" id="lienzo" aria-hidden="true"></canvas>
+  <div class="helio-etiquetas" id="etiquetas" aria-hidden="true">
+    <span class="helio-etiqueta" data-etq="p1">p<sup>+</sup></span>
+    <span class="helio-etiqueta" data-etq="p2">p<sup>+</sup></span>
+    <span class="helio-etiqueta" data-etq="p3">p<sup>+</sup></span>
+    <span class="helio-etiqueta helio-etiqueta--leve" data-etq="positron">e<sup>+</sup> positrón</span>
+    <span class="helio-etiqueta helio-etiqueta--leve" data-etq="neutrino">ν<sub>e</sub> neutrino</span>
+    <span class="helio-etiqueta" data-etq="deuterio"><sup>2</sup>H deuterio</span>
+    <span class="helio-etiqueta helio-etiqueta--leve" data-etq="gamma">γ fotón gamma</span>
+    <span class="helio-etiqueta" data-etq="helio3"><sup>3</sup>He</span>
+    <span class="helio-etiqueta" data-etq="helio3a"><sup>3</sup>He</span>
+    <span class="helio-etiqueta" data-etq="helio3b"><sup>3</sup>He</span>
+    <span class="helio-etiqueta helio-etiqueta--fuerte" data-etq="helio4"><sup>4</sup>He helio</span>
+    <span class="helio-etiqueta helio-etiqueta--leve" data-etq="libre1">p<sup>+</sup></span>
+    <span class="helio-etiqueta helio-etiqueta--leve" data-etq="libre2">p<sup>+</sup></span>
+  </div>
+
+  <header class="helio-cabecera">
+    <p class="helio-cabecera__marca"><span class="helio-cabecera__sello" aria-hidden="true">☉</span> HELIO</p>
+    <nav class="helio-cabecera__nav" aria-label="Capítulos">
+      <ol class="helio-indice" id="indice">
+        <li><a href="#nucleo">Núcleo</a></li>
+        <li><a href="#radiativa">Radiativa</a></li>
+        <li><a href="#convectiva">Convectiva</a></li>
+        <li><a href="#fotosfera">Fotosfera</a></li>
+        <li><a href="#corona">Corona</a></li>
+        <li><a href="#viento">Viento</a></li>
+        <li><a href="#tierra">Tierra</a></li>
+        <li><a href="#anatomia">Anatomía</a></li>
+      </ol>
+    </nav>
+    <a class="helio-cabecera__idioma" href="en.html" hreflang="en" lang="en" aria-label="Read in English">EN</a>
+    <button class="atom-btn atom-btn--secondary atom-btn--size-sm helio-cabecera__modo" type="button" id="modo" aria-pressed="true">
+      <span class="helio-cabecera__modo-txt">Modo papel</span>
+    </button>
+  </header>
+
+  <main id="relato" class="helio-relato">
+
+    <!-- 00 · PORTADA ============================================== -->
+    <section class="helio-portada helio-grid" id="portada" aria-labelledby="titulo">
+      <div class="helio-portada__texto">
+        <p class="helio-rotulo">Un viaje de 149,6 millones de kilómetros</p>
+        <h1 class="helio-portada__titulo" id="titulo" data-parallax="0.32">Helio<span class="helio-portada__sub">del núcleo a la Tierra</span></h1>
+        <p class="helio-portada__lede" data-parallax="0.16">Cada segundo, en el centro del Sol, unos 620 millones de toneladas de hidrógeno se convierten en helio. De esa masa, unos cuatro millones de toneladas desaparecen: se convierten en energía. Esta es la historia de esa energía, de dónde nace, cuánto tarda en salir y qué nos alcanza.</p>
+        <ul class="helio-cifras" aria-label="El Sol en cuatro cifras" data-parallax="0.08">
+          <li class="helio-cifra"><span class="helio-cifra__n" data-contar="15.7" data-decimales="1">15,7</span> <span class="helio-cifra__u">MK</span><span class="helio-cifra__l">temperatura del núcleo</span></li>
+          <li class="helio-cifra"><span class="helio-cifra__n" data-contar="4.26" data-decimales="2">4,26</span> <span class="helio-cifra__u">Mt/s</span><span class="helio-cifra__l">masa que se vuelve energía</span></li>
+          <li class="helio-cifra"><span class="helio-cifra__n" data-contar="3.828" data-decimales="3">3,828</span> <span class="helio-cifra__u">×10<sup>26</sup>&nbsp;W</span><span class="helio-cifra__l">luminosidad</span></li>
+          <li class="helio-cifra"><span class="helio-cifra__n">8:27</span> <span class="helio-cifra__u">min</span><span class="helio-cifra__l">luz hasta la Tierra (peor caso, afelio)</span></li>
+        </ul>
+        <p class="helio-portada__pista"><span class="helio-tecla">Arrastra</span> para girar el Sol · <span class="helio-tecla">pasa el cursor</span> para excitar su campo magnético · <span class="helio-tecla">haz clic</span> para provocar una eyección</p>
+      </div>
+      <p class="helio-hud" id="hud" aria-hidden="true">
+        <span class="helio-hud__fila"><span>LAT</span> <b data-hud="lat">—</b></span>
+        <span class="helio-hud__fila"><span>LON</span> <b data-hud="lon">—</b></span>
+        <span class="helio-hud__fila"><span>T</span> <b data-hud="t">—</b></span>
+        <span class="helio-hud__fila"><span>REGIÓN</span> <b data-hud="region">—</b></span>
+      </p>
+      <p class="helio-portada__baja" aria-hidden="true">Baja <span>↓</span></p>
+    </section>
+
+    <!-- 01 · NÚCLEO =============================================== -->
+    <section class="helio-acto helio-grid" id="nucleo" data-largo="5" aria-labelledby="t-nucleo">
+      <div class="helio-acto__panel">
+        <p class="helio-rotulo"><span class="helio-rotulo__n">01</span> Núcleo · 0–0,25 R<sub>☉</sub></p>
+        <h2 class="helio-acto__titulo" id="t-nucleo">La cadena protón-protón</h2>
+        <p class="helio-acto__lede">A 15,7 millones de kelvin y 150 g/cm³, dos protones se repelen con una fuerza que su agitación térmica no puede vencer. Lo hacen por <em>efecto túnel</em>: la mecánica cuántica les deja atravesar la barrera. Aun así, un protón espera de media unos diez mil millones de años para fusionarse. Hay tantos que el Sol brilla igual.</p>
+        <ol class="helio-pasos" id="pasos-pp">
+          <li class="helio-paso" data-paso="0">
+            <p class="helio-paso__ecuacion">p + p → <sup>2</sup>H + e<sup>+</sup> + ν<sub>e</sub></p>
+            <p class="helio-paso__txt">La fuerza débil convierte un protón en neutrón: nace el deuterio. Salen un positrón y un neutrino, que cruzará el Sol sin tocar nada.</p>
+            <p class="helio-paso__energia">+0,42 MeV</p>
+          </li>
+          <li class="helio-paso" data-paso="1">
+            <p class="helio-paso__ecuacion"><sup>2</sup>H + p → <sup>3</sup>He + γ</p>
+            <p class="helio-paso__txt">En cuestión de segundos, el deuterio captura otro protón. Nace helio-3 y un fotón gamma que empieza su propio viaje.</p>
+            <p class="helio-paso__energia">+5,49 MeV</p>
+          </li>
+          <li class="helio-paso" data-paso="2">
+            <p class="helio-paso__ecuacion"><sup>3</sup>He + <sup>3</sup>He → <sup>4</sup>He + 2p</p>
+            <p class="helio-paso__txt">Dos núcleos de helio-3 chocan y forman helio-4. Devuelven dos protones al plasma, listos para empezar otra vez.</p>
+            <p class="helio-paso__energia">+12,86 MeV</p>
+          </li>
+        </ol>
+        <p class="helio-balance">Balance: 4 p → <sup>4</sup>He + 2e<sup>+</sup> + 2ν<sub>e</sub> + <strong>26,73 MeV</strong>. El 0,7 % de la masa desaparece y se vuelve energía (E = mc²).</p>
+      </div>
+    </section>
+
+    <!-- 02 · ZONA RADIATIVA ======================================= -->
+    <section class="helio-acto helio-grid" id="radiativa" data-largo="3" aria-labelledby="t-radiativa">
+      <div class="helio-acto__panel">
+        <p class="helio-rotulo"><span class="helio-rotulo__n">02</span> Zona radiativa · 0,25–0,7 R<sub>☉</sub></p>
+        <h2 class="helio-acto__titulo" id="t-radiativa">El camino del borracho</h2>
+        <p class="helio-acto__lede">El fotón gamma no sale disparado. El plasma es tan denso que lo absorbe a una fracción de milímetro y lo reemite en una dirección al azar. Cada vez sale con un poco menos de energía: rayos gamma, rayos X, ultravioleta. Avanza como un paseante perdido, y sus 300.000 km/s apenas le sirven.</p>
+        <div class="helio-contador" aria-live="off">
+          <p class="helio-contador__n"><span id="anos">0</span> <span class="helio-contador__u">años</span></p>
+          <p class="helio-contador__l">tiempo de escape estimado · entre 10.000 y 170.000 años según el modelo; mostramos el <strong>peor caso</strong></p>
+          <progress class="atom-progress helio-contador__barra" id="barra-paseo" max="100" value="0" aria-label="Recorrido del fotón por la zona radiativa">0 %</progress>
+        </div>
+        <dl class="helio-datos">
+          <div><dt>Temperatura</dt><dd>7 → 2 MK</dd></div>
+          <div><dt>Densidad</dt><dd>20 → 0,2 g/cm³</dd></div>
+          <div><dt>Longitud de onda</dt><dd id="onda">γ · &lt;0,01 nm</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- 03 · TACOCLINA Y ZONA CONVECTIVA =========================== -->
+    <section class="helio-acto helio-grid" id="convectiva" data-largo="2.5" aria-labelledby="t-convectiva">
+      <div class="helio-acto__panel">
+        <p class="helio-rotulo"><span class="helio-rotulo__n">03</span> Tacoclina y zona convectiva · 0,7–1 R<sub>☉</sub></p>
+        <h2 class="helio-acto__titulo" id="t-convectiva">El Sol hierve</h2>
+        <p class="helio-acto__lede">A unos 2 millones de kelvin los iones recuperan electrones y el plasma se vuelve opaco: la radiación ya no basta. El gas caliente sube, se enfría en la superficie y vuelve a bajar, como el agua de una olla. En unas semanas lleva la energía los últimos 200.000 km.</p>
+        <p class="helio-acto__nota"><span class="helio-marca helio-marca--magnetica" aria-hidden="true"></span> <strong>Tacoclina.</strong> El interior radiativo gira como un sólido; la zona convectiva, no: el ecuador da la vuelta en unos 25 días y los polos en unos 35. En esa capa de cizalla, de unos 28.000 km, se retuerce el campo magnético: es la dinamo solar.</p>
+        <dl class="helio-datos">
+          <div><dt>Temperatura</dt><dd>2 MK → 5.800 K</dd></div>
+          <div><dt>Transporte</dt><dd>convección</dd></div>
+          <div><dt>Tiempo</dt><dd>semanas</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- 04 · FOTOSFERA ============================================ -->
+    <section class="helio-acto helio-grid" id="fotosfera" data-largo="2.5" aria-labelledby="t-fotosfera">
+      <div class="helio-acto__panel">
+        <p class="helio-rotulo"><span class="helio-rotulo__n">04</span> Fotosfera · 500 km de espesor</p>
+        <h2 class="helio-acto__titulo" id="t-fotosfera">La luz, por fin, escapa</h2>
+        <p class="helio-acto__lede">La fotosfera es la capa donde el gas se vuelve transparente. Está cubierta de gránulos de unos 1.000 km, cada uno la cima de una columna de convección que vive entre 8 y 20 minutos. Las manchas son zonas más frías, a unos 3.800 K, donde el campo magnético frena la convección.</p>
+        <figure class="helio-espectro">
+          <canvas class="helio-espectro__lienzo" id="espectro" aria-hidden="true"></canvas>
+          <ul class="helio-espectro__lineas" id="lineas" aria-label="Líneas de Fraunhofer"></ul>
+          <figcaption class="helio-espectro__pie" id="espectro-pie" aria-live="polite">Las <strong>líneas de Fraunhofer</strong>: cada raya oscura es luz absorbida por un elemento de la atmósfera solar. Pasa el cursor o tabula por ellas.</figcaption>
+        </figure>
+        <dl class="helio-datos">
+          <div><dt>Temperatura efectiva</dt><dd>5.772 K</dd></div>
+          <div><dt>Manchas</dt><dd>≈3.800 K · hasta 0,4 T</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- 05 · CROMOSFERA Y CORONA ================================== -->
+    <section class="helio-acto helio-grid" id="corona" data-largo="2.5" aria-labelledby="t-corona">
+      <div class="helio-acto__panel">
+        <p class="helio-rotulo"><span class="helio-rotulo__n">05</span> Cromosfera y corona</p>
+        <h2 class="helio-acto__titulo" id="t-corona">Más lejos, más caliente</h2>
+        <p class="helio-acto__lede">Lo esperable sería que la temperatura bajara al alejarse. No: por encima de la fotosfera cae a unos 4.100 K, sube a 20.000 K en la cromosfera y, en apenas unos cientos de kilómetros, salta a más de un millón en la corona. Por qué ocurre sigue siendo uno de los grandes problemas abiertos de la física solar.</p>
+        <ol class="helio-perfil" aria-label="Perfil de temperatura">
+          <li><span>Fotosfera</span><b>5.772 K</b></li>
+          <li><span>Mínimo</span><b>≈4.100 K</b></li>
+          <li><span>Cromosfera</span><b>≈20.000 K</b></li>
+          <li><span>Región de transición</span><b>↑ en ~100 km</b></li>
+          <li><span>Corona</span><b>1–3 MK</b></li>
+        </ol>
+        <p class="helio-acto__nota">Los bucles que ves son plasma atrapado en líneas de campo magnético. Pasa el cursor por el Sol para que broten nuevos.</p>
+      </div>
+    </section>
+
+    <!-- 06 · VIENTO SOLAR ========================================= -->
+    <section class="helio-acto helio-grid" id="viento" data-largo="2.5" aria-labelledby="t-viento">
+      <div class="helio-acto__panel">
+        <p class="helio-rotulo"><span class="helio-rotulo__n">06</span> Viento solar, fulguraciones y eyecciones</p>
+        <h2 class="helio-acto__titulo" id="t-viento">El Sol se escapa</h2>
+        <p class="helio-acto__lede">La corona está tan caliente que la gravedad no la retiene: se expande en todas direcciones como viento solar, entre 300 y 800 km/s. Como el Sol gira, el flujo se curva en una espiral (la espiral de Parker). Cuando el campo magnético se reconecta, libera de golpe una fulguración o lanza una eyección de masa coronal: miles de millones de toneladas de plasma.</p>
+        <dl class="helio-datos">
+          <div><dt>Pérdida de masa</dt><dd>≈1,5 Mt/s</dd></div>
+          <div><dt>Fulguración X</dt><dd>hasta 10<sup>25</sup> J</dd></div>
+          <div><dt>Eyección</dt><dd>250–3.000 km/s</dd></div>
+        </dl>
+        <button class="atom-btn atom-btn--primary atom-btn--filled helio-acto__accion" type="button" id="lanzar">Lanzar una eyección</button>
+      </div>
+    </section>
+
+    <!-- 07 · LA TIERRA ============================================ -->
+    <section class="helio-acto helio-grid" id="tierra" data-largo="3.5" aria-labelledby="t-tierra">
+      <div class="helio-acto__panel">
+        <p class="helio-rotulo"><span class="helio-rotulo__n">07</span> La Tierra · 1 UA</p>
+        <h2 class="helio-acto__titulo" id="t-tierra">Lo que nos llega</h2>
+        <p class="helio-acto__lede">A 150 millones de kilómetros, la magnetosfera desvía casi todo el viento. Una parte se cuela por los polos, excita el oxígeno y el nitrógeno de la alta atmósfera y lo vemos como auroras. Tiempos calculados para el peor caso: la Tierra en el afelio y el viento más lento.</p>
+        <ol class="helio-llegadas" id="llegadas">
+          <li class="helio-llegada" data-umbral="0.08"><span class="helio-llegada__que">Luz y neutrinos</span><span class="helio-llegada__cuando">8 min 27 s</span><span class="helio-llegada__det">≈1.361 W/m² de media · 65.000 millones de neutrinos por cm² y segundo</span></li>
+          <li class="helio-llegada" data-umbral="0.22"><span class="helio-llegada__que">Rayos X de una fulguración</span><span class="helio-llegada__cuando">8 min 27 s</span><span class="helio-llegada__det">viajan a la velocidad de la luz: no hay aviso previo</span></li>
+          <li class="helio-llegada" data-umbral="0.38"><span class="helio-llegada__que">Protones energéticos</span><span class="helio-llegada__cuando">20 min – horas</span><span class="helio-llegada__det">tormenta de radiación para satélites y vuelos polares</span></li>
+          <li class="helio-llegada" data-umbral="0.56"><span class="helio-llegada__que">Eyección de masa coronal</span><span class="helio-llegada__cuando">15 h – 4 días</span><span class="helio-llegada__det">tormenta geomagnética y auroras a latitudes bajas</span></li>
+          <li class="helio-llegada" data-umbral="0.74"><span class="helio-llegada__que">Viento solar lento</span><span class="helio-llegada__cuando">5,8 días</span><span class="helio-llegada__det">a 300 km/s; el rápido (800 km/s) tarda 2,2 días</span></li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <!-- 08 · ANATOMÍA (isométrico) ================================= -->
+  <section class="helio-anatomia" id="anatomia" aria-labelledby="t-anatomia">
+    <div class="helio-grid helio-anatomia__cabeza">
+      <p class="helio-rotulo"><span class="helio-rotulo__n">08</span> Anatomía técnica</p>
+      <h2 class="helio-anatomia__titulo" id="t-anatomia" data-parallax="0.18">El Sol, abierto en canal</h2>
+      <p class="helio-anatomia__lede" data-parallax="0.09">El Sol en corte, capa a capa. Al bajar, cada anillo se parte en dos mitades espejo que se apartan a izquierda y derecha; cuanto más se alejan del centro, más color pierden, hasta quedar en líneas. Al final solo el núcleo conserva el suyo. Elige una capa para devolverle el color y leer su ficha.</p>
+    </div>
+    <div class="helio-corte" id="corte">
+      <div class="helio-corte__escena">
+        <figure class="helio-corte__figura" aria-labelledby="corte-pie">
+          <canvas class="helio-corte__lienzo" id="corte-lienzo" role="img" aria-label="El Sol en corte: un núcleo central y seis anillos concéntricos que se parten en mitades espejo y se separan a izquierda y derecha; al alejarse pierden el color hasta quedar en líneas."></canvas>
+          <div class="helio-corte__etiquetas" id="corte-etiquetas"></div>
+          <img class="helio-corte__respaldo" data-src="corte-despiezado.svg" loading="lazy" decoding="async" alt="El Sol en corte, despiezado en mitades espejo: el núcleo en el centro y a cada lado las mitades de sus seis capas.">
+          <figcaption class="helio-corte__pie" id="corte-pie">Alturas y grosores esquemáticos, no a escala. Modelado en Blender, isométrica real (30°).</figcaption>
+        </figure>
+        <div class="helio-grid helio-corte__lectura">
+          <ol class="helio-capas" id="capas" aria-label="Capas del Sol">
+            <li><button class="helio-capa" type="button" data-capa="nucleo" aria-pressed="true"><span class="helio-capa__n">01</span> Núcleo</button></li>
+            <li><button class="helio-capa" type="button" data-capa="radiativa" aria-pressed="false"><span class="helio-capa__n">02</span> Radiativa</button></li>
+            <li><button class="helio-capa" type="button" data-capa="tacoclina" aria-pressed="false"><span class="helio-capa__n">03</span> Tacoclina</button></li>
+            <li><button class="helio-capa" type="button" data-capa="convectiva" aria-pressed="false"><span class="helio-capa__n">04</span> Convectiva</button></li>
+            <li><button class="helio-capa" type="button" data-capa="fotosfera" aria-pressed="false"><span class="helio-capa__n">05</span> Fotosfera</button></li>
+            <li><button class="helio-capa" type="button" data-capa="cromosfera" aria-pressed="false"><span class="helio-capa__n">06</span> Cromosfera</button></li>
+            <li><button class="helio-capa" type="button" data-capa="corona" aria-pressed="false"><span class="helio-capa__n">07</span> Corona</button></li>
+          </ol>
+          <article class="helio-ficha" id="ficha" aria-live="polite"></article>
+        </div>
+      </div>
+    </div>
+    <div class="helio-grid helio-anatomia__tabla">
+      <div class="atom-table__container atom-table--resp" role="region" aria-label="Tabla de capas del Sol" tabindex="0">
+        <table class="atom-table">
+          <caption class="helio-tabla__pie">Las capas en cifras. R<sub>☉</sub> = 695.700 km.</caption>
+          <thead>
+            <tr>
+              <th class="atom-table__th" scope="col">Capa</th>
+              <th class="atom-table__th" scope="col">Desde el centro</th>
+              <th class="atom-table__th" scope="col">Temperatura</th>
+              <th class="atom-table__th" scope="col">Densidad</th>
+              <th class="atom-table__th" scope="col">Transporte</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-capas"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <footer class="helio-pie helio-grid">
+    <p class="helio-pie__credito" data-parallax="0.12">Diseñado y desarrollado por <strong>José Luis Pizarro</strong></p>
+    <p class="helio-pie__tecnica">Construido sobre <strong>SYX</strong> (tema <code>helio</code>) con su sistema de retícula, la skill iso-flat y Blender para el corte isométrico, three.js para el Sol y GSAP para el movimiento.</p>
+    <p class="helio-pie__fuentes">Fuentes: NASA (Solar Dynamics Observatory, Parker Solar Probe), ESA (Solar Orbiter), NOAA Space Weather Prediction Center, colaboración Borexino y el modelo solar estándar. Las cifras de tiempo usan el peor caso declarado en cada una.</p>
+  </footer>
+
+  <!--JS-->
+</body>
+</html>

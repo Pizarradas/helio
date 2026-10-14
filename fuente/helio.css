@@ -1,0 +1,645 @@
+/* ================================================================
+   HELIO · CSS del proyecto sobre SYX (tema helio)
+   Diseño: José Luis Pizarro
+   Contrato: CONSUMING.md de SYX — prefijo helio-, @layer syx.app,
+   tokens --helio-* que solo leen roles semánticos, syx-reuse en cada bloque.
+   Retícula: derivada con skill--grid-system/09-herramientas/gridcalc.py
+   (Grid Spec completa en LEEME.md). Cada número de :root cita su comando.
+   ================================================================ */
+@layer syx.reset, syx.base, syx.tokens, syx.atoms, syx.molecules, syx.organisms, syx.app, syx.utilities;
+
+:root {
+  /* — Retícula (gridcalc compose --font stix-two-text-regular --lang es --use reading
+       --density spacious --columns 12 --range 320,1600 --max 1440 --body 17,20) — */
+  --helio-max: 90rem;                                                   /* --max 1440 */
+  --helio-margen: clamp(1rem, -0.8438rem + 9.2188vw, 8.375rem);         /* margin 16 → 134 */
+  --helio-gutter: clamp(1rem, 0.5938rem + 2.0312vw, 2.625rem);          /* gutter 16 → 42 */
+  --helio-padding: clamp(0.875rem, 0.75rem + 0.625vw, 1.375rem);        /* 14 → 22: compose daba 18 a 320 (> gutter 16): bajado para que padding < gutter (L5) */
+  --helio-inner: 0.625rem;                                              /* inner 10 */
+  --helio-micro: clamp(0.25rem, 0.2188rem + 0.1562vw, 0.375rem);        /* micro 4 → 6 */
+  --helio-seccion: clamp(9.375rem, 9.0625rem + 1.5625vw, 10.625rem);    /* section 150 → 170 */
+  --helio-u: 1lh;                                                       /* unidad u = 1 línea de cuerpo (28 → 32px) */
+  --helio-medida: 30.94em;                                              /* 70 car. reales = 30.939em (L4) */
+  --helio-medida-panel: 28.3em;                                         /* 64 car. reales (64/70 · 30.94) */
+
+  /* — Tipo: escala 4:3 (gridcalc scale --ratio perfect-fourth, base 17 → 20), fluida con gridcalc clamp 320→1600 — */
+  --helio-tipo-portada: clamp(5.97rem, 4.3406rem + 8.1469vw, 12.4875rem);   /* paso 6 @320 → paso 8 @1600 */
+  --helio-tipo-h2: clamp(3.355rem, 2.4375rem + 4.5875vw, 7.025rem);        /* paso 4 → paso 6 */
+  --helio-tipo-h2-panel: clamp(2.5169rem, 2.1594rem + 1.7875vw, 3.9469rem);/* paso 3 → paso 4 */
+  --helio-tipo-h3: clamp(1.8881rem, 1.62rem + 1.3406vw, 2.9606rem);        /* paso 2 → paso 3 */
+  --helio-tipo-lede: clamp(1.4163rem, 1.3538rem + 0.3125vw, 1.6663rem);    /* paso 1 */
+  --helio-tipo-cuerpo: clamp(1.0625rem, 1.0156rem + 0.2344vw, 1.25rem);    /* cuerpo 17 → 20 */
+  --helio-tipo-mono: clamp(0.7969rem, 0.7617rem + 0.1758vw, 0.9375rem);    /* paso −1 */
+  --helio-interlineado: 1.647;                                              /* compose: leading 1.647 (STIX Two Text) */
+  --helio-interlineado-lede: 1.4;                                           /* paso 1: múltiplo de u/4 ≥ lh_min 1.061 */
+  --helio-interlineado-titular: 1.1;                                        /* Newsreader 72pt: lh_min (con acentos) 1.167 en caja baja ≈ 0.975; 1.1 con 2 líneas máx. */
+  --helio-interlineado-portada: 0.92;                                       /* una sola línea: no hay colisión posible */
+
+  /* — Color: solo roles semánticos — */
+  --helio-tinta-cosmos: var(--semantic-color-on-emphasis);
+  --helio-tinta-cosmos-suave: color-mix(in oklch, var(--semantic-color-on-emphasis) 72%, transparent);
+  --helio-panel-bg: color-mix(in oklch, var(--semantic-color-bg-primary) 74%, transparent);
+  --helio-panel-borde: var(--semantic-color-border-subtle);
+  --helio-acento: var(--semantic-color-primary);
+  --helio-acento-cosmos: var(--semantic-color-primary);     /* acento sobre el lienzo (siempre oscuro) */
+  --helio-acento-texto: var(--semantic-color-primary-text);
+  --helio-frio: var(--semantic-color-secondary);
+  --helio-frio-texto: var(--semantic-color-secondary-text);
+  --helio-aurora: var(--semantic-color-tertiary);
+  --helio-texto: var(--semantic-color-text-primary);
+  --helio-texto-2: var(--semantic-color-text-secondary);
+  --helio-fondo: var(--semantic-color-bg-primary);
+  --helio-fondo-2: var(--semantic-color-bg-secondary);
+  --helio-filete: var(--semantic-border-width-thin) solid var(--semantic-color-border-default);
+  --helio-filete-suave: var(--semantic-border-width-thin) solid var(--semantic-color-border-subtle);
+  --helio-vacio: var(--semantic-color-bg-emphasis);
+
+  /* — Familias — */
+  --helio-serif: var(--semantic-font-family-heading);
+  --helio-sans: var(--semantic-font-family-primary);
+  --helio-mono: var(--semantic-font-family-mono);
+
+  /* — Movimiento — */
+  --helio-dur: var(--semantic-duration-base);
+  --helio-dur-lenta: var(--semantic-duration-slow);
+  --helio-curva: var(--semantic-easing-standard);
+
+  /* — Estructura de la página — */
+  --helio-cabecera-alto: 3.5rem;                 /* 56px: 2 × unidad u (28px @1600) */
+  --helio-x: 0;                                  /* posición de cada línea del espectro (la escribe JS: (nm − 380) / 320) */
+  --helio-panel-margen-movil: 52svh;             /* en móvil el Sol ocupa la mitad superior antes del texto */
+}
+/* En modo papel el primario es un naranja oscuro (para el papel): sobre el lienzo, que siempre es
+   el vacío, el acento pasa a la tinta clara del énfasis. */
+:root[data-theme="light"] { --helio-acento-cosmos: var(--semantic-color-on-emphasis); }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) { --helio-acento-cosmos: var(--semantic-color-on-emphasis); } }
+
+@layer syx.app {
+  /* syx-reuse-file: retícula y piezas del relato; layout-grid no tiene líneas de inicio ni gutter continuo (06-casos/syx.md §3) */
+
+  /* syx-reuse: checked syx-* base styles — la página es oscura y tipográfica, el cuerpo fija su letra */
+  body.helio {
+    background: var(--helio-vacio);
+    color: var(--helio-texto);
+    font-family: var(--helio-sans);
+    font-size: var(--helio-tipo-cuerpo);
+    line-height: var(--helio-interlineado);
+    overflow-x: clip;
+  }
+
+  /* ---------- Retícula: 12 columnas, margen y gutter continuos ---------- */
+  .helio-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--helio-gutter);
+    padding-inline: var(--helio-margen);
+    max-inline-size: calc(var(--helio-max) + 2 * var(--helio-margen));
+    margin-inline: auto;
+  }
+  .helio-grid > * { grid-column: 1 / -1; }
+
+  /* ---------- Lienzo 3D y etiquetas ---------- */
+  /* syx-reuse: checked org-app-shell — el lienzo es un fondo fijo, no una región de la app */
+  .helio-lienzo {
+    position: fixed; /* syx-allow R03: el lienzo 3D es un fondo fijo de toda la página */
+    inset: 0;
+    inline-size: 100vw;
+    block-size: 100vh;
+    block-size: 100lvh; /* la pantalla con la barra del navegador escondida: no cambia al hacer scroll en móvil */
+    display: block;
+    touch-action: pan-y;
+    background: var(--helio-vacio);
+    contain: strict; /* el lienzo no afecta al resto del layout */
+  }
+  .helio-sin-3d .helio-lienzo { display: none; }
+
+  /* syx-reuse: checked mol-tooltip (anclado a un disparador) — las etiquetas siguen partículas 3D */
+  .helio-etiquetas {
+    position: fixed; /* syx-allow R03: capa de etiquetas sobre el lienzo fijo */
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 2;
+  }
+  .helio-etiqueta {
+    position: absolute; /* syx-allow R03: posición calculada desde la proyección 3D */
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    padding-inline-start: var(--helio-padding);
+    font-family: var(--helio-mono);
+    font-size: var(--helio-tipo-mono);
+    color: var(--helio-tinta-cosmos);
+    white-space: nowrap;
+    opacity: 0;
+    border-inline-start: var(--semantic-border-width-thin) solid var(--helio-tinta-cosmos-suave);
+    margin-block-start: calc(-1 * var(--helio-inner));
+  }
+  .helio-etiqueta.is-visible { opacity: 1; }
+  .helio-etiqueta--leve { color: var(--helio-tinta-cosmos-suave); }
+  .helio-etiqueta--fuerte { font-size: var(--helio-tipo-cuerpo); color: var(--helio-tinta-cosmos); }
+
+  /* ---------- Cabecera ---------- */
+  /* syx-reuse: checked org-site-header (navegación de sitio con menú) — aquí es un índice de capítulos sobre el lienzo */
+  .helio-cabecera {
+    position: fixed; /* syx-allow R03: la cabecera acompaña todo el relato */
+    inset-block-start: 0;
+    inset-inline: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: var(--helio-gutter);
+    block-size: var(--helio-cabecera-alto);
+    padding-inline: var(--helio-margen);
+    color: var(--helio-tinta-cosmos);
+    background: color-mix(in oklch, var(--helio-vacio) 92%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-block-end: var(--semantic-border-width-thin) solid color-mix(in oklch, var(--helio-tinta-cosmos) 12%, transparent);
+  }
+  .helio-cabecera__marca {
+    margin: 0;
+    white-space: nowrap;
+    color: var(--helio-tinta-cosmos);
+    font-family: var(--helio-mono);
+    font-size: var(--helio-tipo-mono);
+    letter-spacing: var(--semantic-letter-spacing-wider);
+  }
+  .helio-cabecera__sello { color: var(--helio-acento-cosmos); }
+  .helio-cabecera__nav { margin-inline-start: auto; }
+  .helio-cabecera__modo { flex: none; }
+  /* syx-reuse: checked atom-btn, atom-link — un cambio de idioma de dos letras al nivel del índice, no un botón */
+  .helio-cabecera__idioma {
+    display: inline-grid;
+    place-items: center;
+    min-inline-size: 2.75rem;
+    min-block-size: 2.75rem; /* objetivo táctil 44px (C7) */
+    font-family: var(--helio-mono);
+    font-size: var(--helio-tipo-mono);
+    letter-spacing: var(--semantic-letter-spacing-wide);
+    color: var(--helio-tinta-cosmos);
+    text-decoration: none;
+    border: var(--semantic-border-width-thin) solid color-mix(in oklch, var(--helio-tinta-cosmos) 30%, transparent);
+    border-radius: var(--semantic-border-radius-sm);
+  }
+  .helio-cabecera__idioma:hover { border-color: var(--helio-acento-cosmos); }
+  .helio-cabecera__idioma:focus-visible { outline: var(--semantic-focus-ring-width) var(--semantic-focus-ring-style) var(--semantic-focus-ring-color); outline-offset: var(--semantic-focus-ring-offset); }
+  .helio-cabecera__nav + .helio-cabecera__idioma { margin-inline-start: 0; }
+  .helio-indice {
+    display: none;
+    gap: var(--helio-gutter);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--helio-mono);
+    font-size: var(--helio-tipo-mono);
+    counter-reset: helio-indice;
+  }
+  .helio-indice li { counter-increment: helio-indice; }
+  .helio-indice a {
+    display: inline-flex;
+    gap: var(--helio-micro);
+    align-items: baseline;
+    min-block-size: 1.5rem; /* objetivo táctil ≥ 24px (L9) */
+    color: var(--helio-tinta-cosmos-suave);
+    text-decoration: none;
+    border-block-end: var(--semantic-border-width-thin) solid transparent;
+  }
+  .helio-indice a::before { content: counter(helio-indice, decimal-leading-zero); color: var(--helio-tinta-cosmos-suave); }
+  .helio-indice a:hover,
+  .helio-indice a[aria-current] { color: var(--helio-tinta-cosmos); border-block-end-color: var(--helio-acento-cosmos); }
+  @media (min-width: 64em) { .helio-indice { display: flex; gap: var(--helio-padding); } }
+  /* Hasta 90em el índice cabe solo si sus números se ocultan (el capítulo ya se lee en el nombre) */
+  @media (min-width: 64em) and (max-width: 89.99em) { .helio-indice a::before { display: none; } }
+  @media (min-width: 90em) { .helio-indice { gap: var(--helio-gutter); } }
+  .helio-cabecera { gap: var(--helio-padding); }
+
+  /* ---------- Rótulo de sección ---------- */
+  .helio-rotulo {
+    display: flex;
+    align-items: baseline;
+    gap: var(--helio-inner);
+    margin: 0 0 var(--helio-inner);
+    font-family: var(--helio-mono);
+    font-size: var(--helio-tipo-mono);
+    letter-spacing: var(--semantic-letter-spacing-wide);
+    text-transform: uppercase;
+    color: var(--helio-texto-2);
+  }
+  .helio-rotulo__n {
+    color: var(--helio-acento-texto);
+    padding-inline-end: var(--helio-inner);
+    border-inline-end: var(--helio-filete);
+  }
+
+  /* ---------- Portada ---------- */
+  .helio-portada {
+    position: relative;
+    z-index: 1;
+    min-block-size: 100svh;
+    align-content: end;
+    padding-block: calc(var(--helio-cabecera-alto) + var(--helio-gutter)) var(--helio-seccion);
+    color: var(--helio-tinta-cosmos);
+    pointer-events: none;
+  }
+  .helio-portada .helio-rotulo { color: var(--helio-tinta-cosmos-suave); }
+  /* En móvil el texto de la portada pisa el Sol: una veladura del vacío desde abajo lo hace legible */
+  .helio-portada::before {
+    content: "";
+    grid-column: 1 / -1;
+    grid-row: 1;
+    align-self: stretch;
+    margin-inline: calc(-1 * var(--helio-margen));
+    background: linear-gradient(to top, var(--helio-vacio) 35%, color-mix(in oklch, var(--helio-vacio) 60%, transparent) 70%, transparent);
+  }
+  .helio-portada > * { grid-row: 1; }
+  .helio-portada__texto { display: grid; gap: var(--helio-padding); }
+  .helio-portada__titulo {
+    margin: 0;
+    font-family: var(--helio-serif);
+    font-weight: var(--semantic-font-weight-heading);
+    font-size: var(--helio-tipo-portada);
+    line-height: var(--helio-interlineado-portada);
+    letter-spacing: var(--semantic-letter-spacing-tight);
+  }
+  .helio-portada__sub {
+    display: block;
+    font-style: italic;
+    font-size: var(--helio-tipo-h3);
+    letter-spacing: var(--semantic-letter-spacing-normal);
+    line-height: var(--helio-interlineado);
+    color: var(--helio-acento-cosmos);
+  }
+  .helio-portada__lede { max-inline-size: var(--helio-medida-panel); margin: 0; color: var(--helio-tinta-cosmos); font-size: var(--helio-tipo-lede); line-height: var(--helio-interlineado-lede); text-wrap: pretty; }
+  .helio-portada__pista { margin: 0; font-family: var(--helio-mono); font-size: var(--helio-tipo-mono); color: var(--helio-tinta-cosmos-suave); }
+  .helio-tecla {
+    padding-inline: var(--helio-micro);
+    border: var(--semantic-border-width-thin) solid var(--helio-tinta-cosmos-suave);
+    border-radius: var(--semantic-border-radius-sm);
+    color: var(--helio-tinta-cosmos);
+  }
+  .helio-portada__baja {
+    display: none;
+    font-family: var(--helio-mono);
+    font-size: var(--helio-tipo-mono);
+    color: var(--helio-tinta-cosmos-suave);
+  }
+
+  /* Cifras de la portada: cuatro, una fila (stat-counter de SYX es para la página, aquí van sobre el lienzo) */
+  /* syx-reuse: checked atom-stat — su tamaño de página no cabe en una fila de cuatro sobre el lienzo */
+  .helio-cifras {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--helio-padding) var(--helio-gutter);
+    margin: var(--helio-padding) 0 0;
+    padding: var(--helio-padding) 0 0;
+    list-style: none;
+    border-block-start: var(--semantic-border-width-thin) solid var(--helio-tinta-cosmos-suave);
+  }
+  .helio-cifra { display: grid; grid-template-columns: auto 1fr; align-items: baseline; column-gap: var(--helio-micro); }
+  .helio-cifra__n { font-family: var(--helio-serif); font-weight: var(--semantic-font-weight-heading); font-size: var(--helio-tipo-h3); line-height: 1; font-variant-numeric: tabular-nums; }
+  .helio-cifra__u { font-family: var(--helio-mono); font-size: var(--helio-tipo-mono); color: var(--helio-acento-cosmos); }
+  .helio-cifra__l { grid-column: 1 / -1; font-size: var(--helio-tipo-mono); font-family: var(--helio-mono); color: var(--helio-tinta-cosmos-suave); }
+
+  /* HUD del cursor */
+  /* syx-reuse: checked mol-tooltip, atom-pill — lectura de instrumento, no un globo ni una etiqueta */
+  .helio-hud {
+    display: none;
+    margin: 0;
+    font-family: var(--helio-mono);
+    font-size: var(--helio-tipo-mono);
+    color: var(--helio-tinta-cosmos-suave);
+    opacity: 0.45;
+    transition: opacity var(--helio-dur) var(--helio-curva);
+  }
+  .helio-hud.is-activo { opacity: 1; }
+  .helio-hud__fila { display: flex; justify-content: space-between; gap: var(--helio-gutter); border-block-end: var(--semantic-border-width-thin) solid color-mix(in oklch, var(--helio-tinta-cosmos) 20%, transparent); padding-block: var(--helio-micro); }
+  .helio-hud__fila b { font-weight: var(--semantic-font-weight-regular); color: var(--helio-tinta-cosmos); }
+
+  /* ---------- Actos del relato ---------- */
+  .helio-relato { position: relative; z-index: 1; pointer-events: none; } /* el puntero atraviesa el relato hasta el lienzo; los paneles lo recuperan */
+  .helio-acto {
+    min-block-size: calc(var(--helio-acto-largo, 2) * 100svh);
+    align-items: start;
+    pointer-events: none;
+  }
+  /* syx-reuse: checked mol-card (superficie de tarjeta, sin desenfoque ni comportamiento pegajoso) — panel del relato sobre el lienzo */
+  .helio-acto__panel {
+    pointer-events: auto;
+    margin-block-start: var(--helio-panel-margen-movil);
+    padding: calc(var(--helio-padding) * 1.5);
+    display: grid;
+    gap: var(--helio-padding);
+    background: var(--helio-panel-bg);
+    border: var(--helio-filete-suave);
+    border-radius: var(--semantic-border-radius-lg);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  }
+  .helio-acto__panel > * { margin: 0; }
+  .helio-acto__titulo {
+    font-family: var(--helio-serif);
+    font-weight: var(--semantic-font-weight-heading);
+    font-size: var(--helio-tipo-h2-panel);
+    line-height: var(--helio-interlineado-titular);
+    letter-spacing: var(--semantic-letter-spacing-tight);
+    color: var(--helio-texto);
+  }
+  .helio-acto__lede { max-inline-size: var(--helio-medida-panel); text-wrap: pretty; color: var(--helio-texto); }
+  .helio-acto__lede em { font-family: var(--helio-serif); font-size: 1.12em; line-height: 1; color: var(--helio-acento-texto); }
+  .helio-acto__nota { max-inline-size: var(--helio-medida-panel); font-size: var(--helio-tipo-cuerpo); color: var(--helio-texto-2); }
+  .helio-acto__accion { justify-self: start; }
+
+  /* Pasos de la cadena pp: solo el activo despliega su texto (el panel no crece al avanzar) */
+  .helio-pasos { display: grid; gap: var(--helio-inner); margin: 0; padding: 0; list-style: none; counter-reset: helio-paso; }
+  .helio-paso {
+    counter-increment: helio-paso;
+    display: grid;
+    grid-template-columns: 1.5rem 1fr auto;
+    column-gap: var(--helio-inner);
+    align-items: baseline;
+    padding-block: var(--helio-inner);
+    border-block-start: var(--helio-filete-suave);
+    color: var(--helio-texto-2);
+    transition: color var(--helio-dur) var(--helio-curva);
+  }
+  .helio-paso::before { content: counter(helio-paso); font-family: var(--helio-mono); font-size: var(--helio-tipo-mono); color: var(--helio-texto-2); }
+  .helio-paso > * { margin: 0; }
+  .helio-paso__ecuacion { font-family: var(--helio-mono); font-size: var(--helio-tipo-cuerpo); }
+  .helio-paso__energia { grid-row: 1; grid-column: 3; font-family: var(--helio-mono); font-size: var(--helio-tipo-mono); white-space: nowrap; }
+  .helio-paso__txt { grid-column: 2 / -1; display: none; padding-block-start: var(--helio-micro); max-inline-size: var(--helio-medida-panel); }
+  .helio-paso.is-activo { color: var(--helio-texto); }
+  .helio-paso.is-activo::before,
+  .helio-paso.is-activo .helio-paso__energia { color: var(--helio-acento-texto); }
+  .helio-paso.is-activo .helio-paso__txt { display: block; }
+  .helio-paso.is-hecho .helio-paso__energia { color: var(--helio-texto); }
+  html:not(.helio-js) .helio-paso__txt,
+  .helio-reducido .helio-paso__txt { display: block; }
+  .helio-balance { font-size: var(--helio-tipo-mono); font-family: var(--helio-mono); color: var(--helio-texto-2); padding-block-start: var(--helio-inner); border-block-start: var(--helio-filete); }
+  .helio-balance strong { color: var(--helio-acento-texto); font-weight: var(--semantic-font-weight-medium); }
+
+  /* Datos en línea (pares término · valor) */
+  .helio-datos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+    gap: var(--helio-inner) var(--helio-gutter);
+    margin: 0;
+  }
+  .helio-datos > div { display: grid; gap: var(--helio-micro); padding-block-start: var(--helio-inner); border-block-start: var(--helio-filete); }
+  .helio-datos dt { font-family: var(--helio-mono); font-size: var(--helio-tipo-mono); text-transform: uppercase; letter-spacing: var(--semantic-letter-spacing-wide); color: var(--helio-texto-2); }
+  .helio-datos dd { margin: 0; font-family: var(--helio-serif); font-weight: var(--semantic-font-weight-heading); font-size: var(--helio-tipo-lede); line-height: 1.2; color: var(--helio-texto); }
+
+  /* Contador del fotón */
+  .helio-contador { display: grid; gap: var(--helio-micro); }
+  .helio-contador > * { margin: 0; }
+  .helio-contador__n { white-space: nowrap; font-family: var(--helio-serif); font-weight: var(--semantic-font-weight-heading); font-size: var(--helio-tipo-h2-panel); line-height: 1; font-variant-numeric: tabular-nums; color: var(--helio-acento-texto); }
+  .helio-contador__u { font-size: var(--helio-tipo-h3); color: var(--helio-texto); }
+  .helio-contador__l { font-family: var(--helio-mono); font-size: var(--helio-tipo-mono); color: var(--helio-texto-2); max-inline-size: var(--helio-medida-panel); }
+  .helio-contador__barra { inline-size: 100%; }
+
+  /* Marca de color (tacoclina) */
+  .helio-marca { display: inline-block; inline-size: 0.75em; block-size: 0.75em; border-radius: 50%; vertical-align: baseline; }
+  .helio-marca--magnetica { background: var(--helio-frio); }
+
+  /* Espectro con líneas de Fraunhofer */
+  /* syx-reuse: checked atom-progress, mol-tabs — un espectro físico no es una barra ni una pestaña */
+  .helio-espectro { margin: 0; display: grid; gap: var(--helio-inner); }
+  .helio-espectro__lienzo { display: block; inline-size: 100%; block-size: 2.75rem; border-radius: var(--semantic-border-radius-sm); grid-area: 1 / 1; }
+  .helio-espectro__lineas { grid-area: 1 / 1; position: relative; margin: 0; padding: 0; list-style: none; block-size: 2.75rem; }
+  .helio-espectro__item {
+    position: absolute; /* syx-allow R03: cada línea se coloca en su longitud de onda */
+    inset-block: 0;
+    inset-inline-start: calc(var(--helio-x) * 100%);
+    translate: -50% 0;
+  }
+  .helio-espectro__linea {
+    display: grid;
+    place-items: end center;
+    inline-size: 1.5rem;
+    block-size: calc(100% + 1.25rem);
+    padding: 0;
+    border: 0;
+    background: none;
+    font-family: var(--helio-mono);
+    font-size: var(--helio-tipo-mono);
+    color: var(--helio-texto-2);
+    cursor: help;
+  }
+  .helio-espectro__linea:hover,
+  .helio-espectro__linea:focus-visible { color: var(--helio-acento-texto); }
+  .helio-espectro__linea:focus-visible { outline: var(--semantic-focus-ring-width) var(--semantic-focus-ring-style) var(--semantic-focus-ring-color); outline-offset: var(--semantic-focus-ring-offset); }
+  .helio-espectro__pie { margin-block-start: var(--helio-padding); font-size: var(--helio-tipo-mono); font-family: var(--helio-mono); color: var(--helio-texto-2); min-block-size: 3lh; }
+  .helio-espectro__pie strong { color: var(--helio-acento-texto); font-weight: var(--semantic-font-weight-medium); }
+
+  /* Perfil de temperatura: una escalera que sube */
+  .helio-perfil { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: end; gap: var(--helio-micro); margin: 0; padding: 0; list-style: none; counter-reset: helio-perfil; }
+  .helio-perfil li { display: grid; gap: var(--helio-micro); align-content: end; padding: var(--helio-inner) var(--helio-micro) 0; border-block-start: var(--semantic-border-width-thick) solid var(--helio-acento); font-family: var(--helio-mono); font-size: var(--helio-tipo-mono); color: var(--helio-texto-2); }
+  .helio-perfil li:nth-child(2) { border-block-start-color: var(--helio-texto-2); }
+  .helio-perfil li:nth-child(4),
+  .helio-perfil li:nth-child(5) { border-block-start-color: var(--helio-frio); }
+  .helio-perfil b { font-weight: var(--semantic-font-weight-regular); color: var(--helio-texto); }
+  /* La altura de cada escalón sigue la temperatura en escala logarítmica (log10 K): 3,76 · 3,61 · 4,3 · 5 · 6,2 */
+  .helio-perfil li:nth-child(1) { min-block-size: 3.8rem; }
+  .helio-perfil li:nth-child(2) { min-block-size: 3.4rem; }
+  .helio-perfil li:nth-child(3) { min-block-size: 5.1rem; }
+  .helio-perfil li:nth-child(4) { min-block-size: 6.8rem; }
+  .helio-perfil li:nth-child(5) { min-block-size: 9.8rem; }
+
+  /* Llegadas a la Tierra */
+  .helio-llegadas { display: grid; margin: 0; padding: 0; list-style: none; }
+  .helio-llegada {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--helio-micro) var(--helio-gutter);
+    padding-block: var(--helio-inner);
+    border-block-start: var(--helio-filete-suave);
+    opacity: 0.38;
+    transition: opacity var(--helio-dur-lenta) var(--helio-curva);
+  }
+  .helio-llegada.is-llegado { opacity: 1; }
+  html:not(.helio-js) .helio-llegada,
+  .helio-reducido .helio-llegada,
+  .helio-sin-3d .helio-llegada { opacity: 1; }
+  .helio-llegada__que { color: var(--helio-texto); }
+  .helio-llegada__cuando { font-family: var(--helio-mono); color: var(--helio-acento-texto); text-align: end; }
+  .helio-llegada__det { grid-column: 1 / -1; font-size: var(--helio-tipo-mono); font-family: var(--helio-mono); color: var(--helio-texto-2); }
+
+  /* ---------- Anatomía (isométrico) ---------- */
+  .helio-anatomia {
+    position: relative;
+    z-index: 1;
+    padding-block: var(--helio-seccion);
+    background: var(--helio-fondo);
+    color: var(--helio-texto);
+    border-block-start: var(--helio-filete);
+  }
+  .helio-anatomia__cabeza { row-gap: var(--helio-padding); margin-block-end: var(--helio-gutter); }
+  .helio-anatomia__titulo { margin: 0; font-family: var(--helio-serif); font-weight: var(--semantic-font-weight-heading); font-size: var(--helio-tipo-h2); line-height: var(--helio-interlineado-titular); }
+  .helio-anatomia__lede { margin: 0; max-inline-size: var(--helio-medida); font-size: var(--helio-tipo-lede); line-height: var(--helio-interlineado-lede); color: var(--helio-texto-2); }
+  .helio-anatomia__tabla { margin-block-start: var(--helio-seccion); }
+
+  /* El corte: un tramo de scroll largo con la escena pegada arriba */
+  .helio-corte { position: relative; }
+  /* syx-reuse: checked mol-card — el corte es una figura técnica a sangre con retícula de fondo, no una tarjeta */
+  .helio-corte__escena {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: var(--helio-padding);
+    min-block-size: calc(100svh - var(--helio-cabecera-alto));
+    padding-block: var(--helio-padding);
+  }
+  .helio-corte__figura {
+    position: relative;
+    margin: 0;
+    min-block-size: 38svh;
+    border-block: var(--helio-filete-suave);
+    background-image: radial-gradient(circle, var(--semantic-color-border-default) 1px, transparent 1.5px);
+    background-size: var(--helio-u) var(--helio-u); /* la unidad u del cuerpo (28 → 32px) */
+    background-position: center;
+  }
+  .helio-corte__lienzo { display: block; inline-size: 100%; block-size: 100%; position: absolute; inset: 0; } /* syx-allow R03: el lienzo llena la figura */
+  .helio-corte__etiquetas { position: absolute; inset: 0; pointer-events: none; } /* syx-allow R03: capa de etiquetas sobre el lienzo */
+  .helio-corte__etiqueta {
+    position: absolute; /* syx-allow R03: posición calculada desde la proyección isométrica */
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    translate: -50% -100%;
+    display: inline-flex;
+    gap: var(--helio-micro);
+    align-items: baseline;
+    min-block-size: 1.5rem;
+    padding: 0 var(--helio-micro) var(--helio-micro);
+    border: 0;
+    border-block-end: var(--semantic-border-width-thin) solid var(--helio-texto-2);
+    background: none;
+    font-family: var(--helio-mono);
+    font-size: var(--helio-tipo-mono);
+    color: var(--helio-texto-2);
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .helio-corte__etiqueta:hover,
+  .helio-corte__etiqueta.is-elegida { color: var(--helio-texto); border-block-end-color: var(--helio-acento); }
+  .helio-corte__etiqueta:focus-visible { outline: var(--semantic-focus-ring-width) var(--semantic-focus-ring-style) var(--semantic-focus-ring-color); outline-offset: var(--semantic-focus-ring-offset); }
+  .helio-corte__n { color: var(--helio-acento-texto); }
+  .helio-corte__nombre { display: none; }
+  .helio-corte__etiqueta.is-elegida:not(.helio-corte__etiqueta--espejo) .helio-corte__nombre { display: inline; }
+  .helio-corte__respaldo { display: none; inline-size: 100%; block-size: 100%; object-fit: contain; padding: var(--helio-padding); }
+  .helio-corte.is-sin-3d .helio-corte__respaldo { display: block; }
+  .helio-corte.is-sin-3d .helio-corte__lienzo { display: none; }
+  .helio-corte__pie {
+    position: absolute; /* syx-allow R03: pie de figura anclado a su esquina */
+    inset-block-end: var(--helio-inner);
+    inset-inline-end: var(--helio-margen);
+    font-family: var(--helio-mono);
+    font-size: var(--helio-tipo-mono);
+    color: var(--helio-texto-2);
+  }
+  .helio-corte__lectura { row-gap: var(--helio-padding); align-items: start; }
+  .helio-capas { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: var(--helio-micro) var(--helio-gutter); margin: 0; padding: 0; list-style: none; }
+  /* syx-reuse: checked atom-btn, mol-tabs (una pestaña oculta los demás paneles) — selector de capa en fila técnica */
+  .helio-capa {
+    display: inline-flex;
+    gap: var(--helio-micro);
+    align-items: baseline;
+    min-block-size: 2.75rem;
+    padding: var(--helio-inner) 0;
+    border: 0;
+    border-block-end: var(--semantic-border-width-thick) solid transparent;
+    background: none;
+    color: var(--helio-texto-2);
+    font: inherit;
+    font-size: var(--helio-tipo-cuerpo);
+    cursor: pointer;
+    transition: color var(--helio-dur) var(--helio-curva), border-color var(--helio-dur) var(--helio-curva);
+  }
+  .helio-capa__n { font-family: var(--helio-mono); font-size: var(--helio-tipo-mono); }
+  .helio-capa:hover { color: var(--helio-texto); }
+  .helio-capa[aria-pressed="true"] { color: var(--helio-texto); border-block-end-color: var(--helio-acento); }
+  .helio-capa:focus-visible { outline: var(--semantic-focus-ring-width) var(--semantic-focus-ring-style) var(--semantic-focus-ring-color); outline-offset: var(--semantic-focus-ring-offset); }
+  .helio-ficha { grid-column: 1 / -1; display: grid; gap: var(--helio-inner); }
+  .helio-ficha > * { margin: 0; }
+  .helio-ficha__n { font-family: var(--helio-mono); font-size: var(--helio-tipo-mono); color: var(--helio-acento-texto); }
+  .helio-ficha__titulo { font-family: var(--helio-serif); font-weight: var(--semantic-font-weight-heading); font-size: var(--helio-tipo-h3); line-height: 1.1; }
+  .helio-ficha__texto { max-inline-size: var(--helio-medida-panel); color: var(--helio-texto-2); }
+  .helio-ficha__dato { font-family: var(--helio-mono); font-size: var(--helio-tipo-mono); padding: var(--helio-inner) var(--helio-padding); background: var(--helio-fondo-2); border-inline-start: var(--semantic-border-width-thick) solid var(--helio-acento); }
+  .helio-tabla__pie { caption-side: bottom; padding-block-start: var(--helio-inner); text-align: start; font-family: var(--helio-mono); font-size: var(--helio-tipo-mono); color: var(--helio-texto-2); }
+  .helio-tabla__sub { font-family: var(--helio-mono); font-size: var(--helio-tipo-mono); color: var(--helio-texto-2); }
+
+  /* ---------- Pie ---------- */
+  .helio-pie {
+    position: relative;
+    z-index: 1;
+    row-gap: var(--helio-padding);
+    padding-block: var(--helio-gutter) var(--helio-seccion);
+    background: var(--helio-fondo);
+    color: var(--helio-texto-2);
+    font-size: var(--helio-tipo-mono);
+    font-family: var(--helio-mono);
+    border-block-start: var(--helio-filete);
+  }
+  .helio-pie > * { margin: 0; max-inline-size: var(--helio-medida); }
+  .helio-pie__credito { font-family: var(--helio-serif); font-weight: var(--semantic-font-weight-heading); font-size: var(--helio-tipo-h3); line-height: 1.2; color: var(--helio-texto); }
+  .helio-pie__credito strong { font-weight: var(--semantic-font-weight-regular); font-style: italic; color: var(--helio-acento-texto); }
+
+  /* ================================================================
+     ESTRUCTURA POR RANGO (mobile first). Los breakpoints cambian la
+     estructura, no el tamaño de los gaps (L3).
+     ================================================================ */
+  @media (min-width: 48em) {
+    /* Las cifras siguen en 2 × 2: con «×10²⁶ W», cuatro en fila no caben en las 6–8 columnas del texto */
+    .helio-portada__baja { display: block; }
+  }
+  /* 64em = 1024px: compose pasa de 6 a 12 columnas en uso */
+  @media (min-width: 64em) {
+    /* O3 desplazamiento + O14 vacío activo: el texto ocupa 1–5 y las columnas 6–12 son del Sol */
+    .helio-portada::before { display: none; }
+    .helio-portada__texto { grid-column: 1 / span 6; }
+    .helio-portada__titulo { margin-inline-start: -0.06em; } /* alineación óptica de la «H» con la línea 1 */
+    .helio-hud { display: grid; grid-column: 10 / span 3; grid-row: 1; align-self: end; }
+    .helio-portada__baja { grid-column: 12 / span 1; grid-row: 1; align-self: start; justify-self: end; }
+    .helio-acto__panel {
+      grid-column: 1 / span 5;
+      position: sticky; /* syx-allow R03: el panel acompaña su acto mientras el Sol cambia detrás */
+      inset-block-start: calc(var(--helio-cabecera-alto) + var(--helio-inner));
+      margin-block-start: calc(var(--helio-cabecera-alto) + var(--helio-gutter));
+      max-block-size: calc(100svh - var(--helio-cabecera-alto) - 2 * var(--helio-inner));
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+    /* Anatomía: el corte se queda a la vista durante 2,6 pantallas mientras se despieza */
+    .helio-anatomia__cabeza > * { grid-column: 1 / span 7; }
+    .helio-corte { block-size: 260svh; }
+    .helio-corte__escena {
+      position: sticky; /* syx-allow R03: la escena del corte queda fija mientras el scroll la despieza */
+      inset-block-start: var(--helio-cabecera-alto);
+      block-size: calc(100svh - var(--helio-cabecera-alto));
+    }
+    /* Lectura: la fila de capas a todo el ancho; la ficha, texto 1–5 · datos 6–12 (5:7 ≈ 1:√2, gridcalc ratio --ratio sqrt2) */
+    .helio-ficha { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--helio-gutter); }
+    .helio-ficha > :not(.helio-ficha__datos):not(.helio-ficha__dato) { grid-column: 1 / span 5; }
+    .helio-ficha__datos { grid-column: 6 / span 7; grid-row: 1 / span 3; align-self: start; }
+    .helio-ficha__dato { grid-column: 6 / span 7; grid-row: 4; }
+    .helio-pie > * { grid-column: 1 / span 7; }
+    .helio-pie__fuentes { grid-column: 8 / span 5; grid-row: 1 / span 2; }
+  }
+  /* 64–90em: con 5 columnas la prosa del panel bajaba a 29–38 car. (C5, medido); 6 la deja en 45–62.
+     Desde 90em vuelven las 5 columnas: la columna ya mide ≥ 68px. */
+  @media (min-width: 64em) and (max-width: 89.99em) {
+    .helio-acto__panel { grid-column: 1 / span 6; }
+    .helio-portada__texto { grid-column: 1 / span 7; }
+  }
+  /* 64–80em: compose da 6 columnas en uso (columna ≥ 1,5 × gutter solo a pares); con STIX a 18–19px
+     el panel de 6 dejaba 36–40 car. (medido): pasa a 7 (≈ 3,5 columnas en uso) y la portada a 8. */
+  @media (min-width: 64em) and (max-width: 79.99em) {
+    .helio-acto__panel { grid-column: 1 / span 7; }
+    .helio-portada__texto { grid-column: 1 / span 8; }
+  }
+
+  /* ---------- Movimiento reducido ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    .helio-hud,
+    .helio-paso,
+    .helio-llegada,
+    .helio-capa { transition: none; }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "helio",
+  "private": true,
+  "description": "HELIO — del núcleo a la Tierra. Landing sobre SYX (tema helio).",
+  "type": "module",
+  "scripts": {
+    "build": "node montar.mjs"
+  },
+  "syx": {
+    "theme": "helio"
+  },
+  "dependencies": {
+    "gsap": "3.12.5",
+    "three": "0.160.0"
+  },
+  "devDependencies": {
+    "@gltf-transform/cli": "^4.5.1",
+    "esbuild": "0.24.0"
+  }
+}
